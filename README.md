@@ -1,30 +1,24 @@
-# TransitTrack project
+# TransitTrack
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A modern web application for visualizing Greater Toronto Area (GTA) transit infrastructure projects with real-time construction progress tracking.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/sgreenwood-rempathcoms-projects/v0-transit-track-project)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/B62Wi1sHv9B)
+## Quick Start
 
-## Overview
+```bash
+# Clone the repository
+git clone <repository-url>
+cd transittrack
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+# Switch to development branch
+git checkout dev
 
-## Deployment
+# Install dependencies
+npm install
 
-Your project is live at:
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
 
-**[https://vercel.com/sgreenwood-rempathcoms-projects/v0-transit-track-project](https://vercel.com/sgreenwood-rempathcoms-projects/v0-transit-track-project)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.dev/chat/projects/B62Wi1sHv9B](https://v0.dev/chat/projects/B62Wi1sHv9B)**
-
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+# Start development server
+npm run dev
+```
