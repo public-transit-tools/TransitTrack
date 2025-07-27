@@ -1,4 +1,4 @@
-# TransitTrack
+﻿# TransitTrack
 
 A modern web application for visualizing Greater Toronto Area (GTA) transit infrastructure projects with real-time construction progress tracking.
 
@@ -22,3 +22,5 @@ cp .env.example .env.local
 # Start development server
 npm run dev
 ```
+
+<!-- Last updated by reset-main-generic.ps1 on 2025-07-27 11:41:36 -->
