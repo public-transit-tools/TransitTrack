@@ -18,133 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-
-// Mock data for preview
-const mockProjects = [
-  {
-    id: 1,
-    name: "Ontario Line",
-    status: "In Progress",
-    progress_percentage: 35,
-    budget_total: "$19.0B",
-    estimated_completion: "2031",
-    project_type: "Subway",
-    length: "15.6 km",
-    stations: 15,
-    description: "A new 15.6-kilometre subway line that will bring 15 new stations to Toronto.",
-    coordinates: [
-      [-79.4194, 43.6362],
-      [-79.4, 43.645],
-      [-79.3832, 43.6532],
-      [-79.37, 43.66],
-      [-79.35, 43.665],
-      [-79.33, 43.67],
-      [-79.31, 43.675],
-      [-79.29, 43.68],
-    ],
-    created_at: "2024-01-01T00:00:00Z",
-    updated_at: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: 2,
-    name: "Eglinton Crosstown LRT",
-    status: "Delayed",
-    progress_percentage: 95,
-    budget_total: "$12.8B",
-    estimated_completion: "2024",
-    project_type: "LRT",
-    length: "19 km",
-    stations: 25,
-    description: "A 19-kilometre light rail transit line running along Eglinton Avenue.",
-    coordinates: [
-      [-79.5442, 43.7282],
-      [-79.5142, 43.7282],
-      [-79.4842, 43.7282],
-      [-79.4542, 43.7282],
-      [-79.4242, 43.7282],
-      [-79.3942, 43.7282],
-      [-79.3642, 43.7282],
-      [-79.3342, 43.7282],
-      [-79.3042, 43.7282],
-      [-79.2742, 43.7282],
-      [-79.2442, 43.7282],
-      [-79.2142, 43.7282],
-      [-79.1842, 43.7282],
-    ],
-    created_at: "2024-01-01T00:00:00Z",
-    updated_at: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: 3,
-    name: "Finch West LRT",
-    status: "In Progress",
-    progress_percentage: 85,
-    budget_total: "$2.5B",
-    estimated_completion: "2024",
-    project_type: "LRT",
-    length: "11 km",
-    stations: 18,
-    description: "An 11-kilometre light rail transit line along Finch Avenue West.",
-    coordinates: [
-      [-79.5, 43.76],
-      [-79.47, 43.76],
-      [-79.44, 43.76],
-      [-79.41, 43.76],
-      [-79.38, 43.76],
-      [-79.35, 43.76],
-    ],
-    created_at: "2024-01-01T00:00:00Z",
-    updated_at: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: 4,
-    name: "Lakeshore West Line",
-    status: "In Progress",
-    progress_percentage: 45,
-    budget_total: "$2.1B",
-    estimated_completion: "2025",
-    project_type: "GO Rail",
-    length: "67 km",
-    stations: 12,
-    description: "Improvements to the Lakeshore West GO line for more frequent service.",
-    coordinates: [
-      [-79.3832, 43.6426],
-      [-79.45, 43.63],
-      [-79.52, 43.62],
-      [-79.59, 43.61],
-      [-79.66, 43.6],
-      [-79.73, 43.59],
-      [-79.8, 43.58],
-    ],
-    created_at: "2024-01-01T00:00:00Z",
-    updated_at: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: 5,
-    name: "Hazel McCallion LRT",
-    status: "In Progress",
-    progress_percentage: 65,
-    budget_total: "$4.6B",
-    estimated_completion: "2024",
-    project_type: "LRT",
-    length: "18 km",
-    stations: 18,
-    description: "An 18-kilometre light rail transit line through Mississauga.",
-    coordinates: [
-      [-79.64, 43.55],
-      [-79.635, 43.57],
-      [-79.63, 43.59],
-      [-79.625, 43.61],
-      [-79.62, 43.63],
-      [-79.615, 43.65],
-      [-79.61, 43.67],
-      [-79.605, 43.69],
-      [-79.6, 43.71],
-    ],
-    created_at: "2024-01-01T00:00:00Z",
-    updated_at: "2024-01-01T00:00:00Z",
-  },
-]
+import { getTransitProjects, type TransitProject } from "@/lib/supabase"
 
 // Map configuration
 const MAP_CONFIG = {
@@ -214,14 +88,42 @@ const getProjectTypeColor = (type: string) => {
 }
 
 export default function TransitTrack() {
-  const [projects] = useState(mockProjects)
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0])
+  const [projects, setProjects] = useState<TransitProject[]>([])
+  const [selectedProject, setSelectedProject] = useState<TransitProject | null>(null)
   const [mapCenter, setMapCenter] = useState(MAP_CONFIG.center)
   const [mapZoom, setMapZoom] = useState(MAP_CONFIG.zoom)
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true)
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true)
   const [tiles, setTiles] = useState<Array<{ x: number; y: number; url: string }>>([])
-  const [lastUpdated] = useState(new Date())
+  const [lastUpdated, setLastUpdated] = useState(new Date())
+  const [dataSource, setDataSource] = useState<"supabase" | "geojson" | "mock">("mock")
+  const [loading, setLoading] = useState(true)
+
+  // Load projects on component mount
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setLoading(true)
+        const result = await getTransitProjects()
+        setProjects(result.projects)
+        setDataSource(result.source)
+        setLastUpdated(new Date())
+
+        // Set first project as selected if none selected
+        if (result.projects.length > 0 && !selectedProject) {
+          setSelectedProject(result.projects[0])
+        }
+
+        console.log(`Loaded ${result.projects.length} projects from ${result.source}`)
+      } catch (error) {
+        console.error("Failed to load projects:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProjects()
+  }, [])
 
   // Calculate map dimensions based on sidebar states
   const getMapDimensions = () => {
@@ -284,7 +186,7 @@ export default function TransitTrack() {
     }
   }
 
-  const handleProjectClick = (project: any) => {
+  const handleProjectClick = (project: TransitProject) => {
     setSelectedProject(project)
     if (project.coordinates && project.coordinates.length > 0) {
       const [lng, lat] = project.coordinates[0]
@@ -292,7 +194,7 @@ export default function TransitTrack() {
     }
   }
 
-  const renderTransitLine = (project: any) => {
+  const renderTransitLine = (project: TransitProject) => {
     if (!project.coordinates || project.coordinates.length < 2) return null
 
     const points = project.coordinates.map(([lng, lat]: [number, number]) =>
@@ -303,7 +205,8 @@ export default function TransitTrack() {
       return path + (index === 0 ? `M ${point.x} ${point.y}` : ` L ${point.x} ${point.y}`)
     }, "")
 
-    const color = getProjectTypeColor(project.project_type)
+    // Use project's custom color if available, otherwise use type-based color
+    const color = project.color || getProjectTypeColor(project.project_type)
     const statusColor = getStatusColor(project.status)
     const isSelected = selectedProject?.id === project.id
 
@@ -335,20 +238,26 @@ export default function TransitTrack() {
           className="pointer-events-none"
         />
 
-        {/* Station markers */}
-        {points.map((point: any, index: number) => (
-          <circle
-            key={index}
-            cx={point.x}
-            cy={point.y}
-            r={isSelected ? 7 : 5}
-            fill="white"
-            stroke={color}
-            strokeWidth={2}
-            className="cursor-pointer hover:r-8 transition-all"
-            onClick={() => handleProjectClick(project)}
-          />
-        ))}
+        {/* Station markers - show fewer for complex lines */}
+        {points.map((point: any, index: number) => {
+          // For lines with many points, only show every nth marker
+          const showMarker = points.length <= 20 || index % Math.ceil(points.length / 15) === 0
+          if (!showMarker) return null
+
+          return (
+            <circle
+              key={index}
+              cx={point.x}
+              cy={point.y}
+              r={isSelected ? 7 : 5}
+              fill="white"
+              stroke={color}
+              strokeWidth={2}
+              className="cursor-pointer hover:r-8 transition-all"
+              onClick={() => handleProjectClick(project)}
+            />
+          )
+        })}
 
         {/* Project label for selected line */}
         {isSelected && points.length > 0 && (
@@ -378,14 +287,54 @@ export default function TransitTrack() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
+  const getDataSourceLabel = () => {
+    switch (dataSource) {
+      case "supabase":
+        return "Supabase DB"
+      case "geojson":
+        return "GeoJSON Files"
+      case "mock":
+        return "Mock Data"
+      default:
+        return "Unknown"
+    }
+  }
+
+  const getDataSourceIcon = () => {
+    switch (dataSource) {
+      case "supabase":
+        return <BarChart3 className="w-3 h-3 text-green-600" />
+      case "geojson":
+        return <BarChart3 className="w-3 h-3 text-blue-600" />
+      case "mock":
+        return <WifiOff className="w-3 h-3 text-gray-600" />
+      default:
+        return <WifiOff className="w-3 h-3 text-gray-600" />
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <Train className="w-5 h-5 text-white animate-pulse" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Loading TransitTrack</h2>
+          <p className="text-gray-600">Loading transit project data...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex overflow-hidden">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       {/* Left Sidebar */}
       <div
-        className={`bg-white border-r border-gray-200 transition-all duration-300 ${leftSidebarOpen ? "w-80" : "w-12"} flex flex-col flex-shrink-0`}
+        className={`bg-white border-r border-gray-200 transition-all duration-300 ${leftSidebarOpen ? "w-80" : "w-12"} flex flex-col flex-shrink-0 h-full`}
       >
         {/* Left Sidebar Header */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
           {leftSidebarOpen && (
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
@@ -394,8 +343,8 @@ export default function TransitTrack() {
               <div>
                 <h1 className="text-xl font-bold text-gray-900">TransitTrack</h1>
                 <div className="flex items-center space-x-2 text-sm">
-                  <BarChart3 className="w-3 h-3 text-gray-600" />
-                  <span className="text-gray-600 font-medium">Mock Data</span>
+                  {getDataSourceIcon()}
+                  <span className="text-gray-600 font-medium">{getDataSourceLabel()}</span>
                 </div>
               </div>
             </div>
@@ -407,15 +356,17 @@ export default function TransitTrack() {
 
         {/* Left Sidebar Content */}
         {leftSidebarOpen && (
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto min-h-0">
             {/* Connection Status */}
-            <div className="p-4 border-b border-gray-200 bg-gray-50">
+            <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2 text-sm">
-                  <WifiOff className="w-4 h-4 text-gray-600" />
-                  <span className="text-gray-600 font-medium">Demo Mode</span>
+                  {getDataSourceIcon()}
+                  <span className="text-gray-600 font-medium">
+                    {dataSource === "mock" ? "Demo Mode" : `${getDataSourceLabel()} Connected`}
+                  </span>
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={() => window.location.reload()}>
                   <RefreshCw className="w-3 h-3" />
                 </Button>
               </div>
@@ -423,7 +374,7 @@ export default function TransitTrack() {
             </div>
 
             {/* Navigation */}
-            <div className="p-4 border-b border-gray-200">
+            <div className="p-4 border-b border-gray-200 flex-shrink-0">
               <nav className="space-y-2">
                 <Button variant="default" className="w-full justify-start">
                   <MapPin className="w-4 h-4 mr-2" />
@@ -440,10 +391,12 @@ export default function TransitTrack() {
               </nav>
             </div>
 
-            {/* Project List */}
-            <div className="p-4">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Transit Projects ({projects.length})</h3>
-              <div className="space-y-3">
+            {/* Project List - Scrollable */}
+            <div className="p-4 flex-1 min-h-0">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 sticky top-0 bg-white py-2 -mt-2">
+                Transit Projects ({projects.length})
+              </h3>
+              <div className="space-y-3 pb-4">
                 {projects.map((project) => (
                   <Card
                     key={project.id}
@@ -458,8 +411,8 @@ export default function TransitTrack() {
                         <Badge
                           variant="secondary"
                           style={{
-                            backgroundColor: `${getProjectTypeColor(project.project_type)}20`,
-                            color: getProjectTypeColor(project.project_type),
+                            backgroundColor: `${project.color || getProjectTypeColor(project.project_type)}20`,
+                            color: project.color || getProjectTypeColor(project.project_type),
                           }}
                         >
                           {project.project_type}
@@ -486,9 +439,9 @@ export default function TransitTrack() {
       </div>
 
       {/* Main Map Area */}
-      <div className="flex-1 relative min-w-0">
+      <div className="flex-1 relative min-w-0 h-full">
         {/* Map Container */}
-        <div className="w-full h-screen relative overflow-hidden">
+        <div className="w-full h-full relative overflow-hidden">
           <div
             className="absolute inset-0"
             style={{
@@ -533,7 +486,7 @@ export default function TransitTrack() {
 
               {/* Attribution */}
               <text x="10" y={mapDimensions.height - 10} fill="#666" fontSize="10" className="pointer-events-none">
-                © OpenStreetMap contributors • Data: MOCK
+                © OpenStreetMap contributors • Data: {getDataSourceLabel()}
               </text>
             </svg>
           </div>
@@ -584,7 +537,7 @@ export default function TransitTrack() {
               <div>Projects: {projects.length}</div>
               <div className="flex items-center space-x-1">
                 <span>Source:</span>
-                <span className="font-medium">MOCK</span>
+                <span className="font-medium">{getDataSourceLabel()}</span>
               </div>
               <div>
                 Size: {mapDimensions.width}×{mapDimensions.height}
@@ -618,10 +571,10 @@ export default function TransitTrack() {
 
       {/* Right Sidebar */}
       <div
-        className={`bg-white border-l border-gray-200 transition-all duration-300 ${rightSidebarOpen ? "w-96" : "w-12"} flex flex-col flex-shrink-0`}
+        className={`bg-white border-l border-gray-200 transition-all duration-300 ${rightSidebarOpen ? "w-96" : "w-12"} flex flex-col flex-shrink-0 h-full`}
       >
         {/* Right Sidebar Header */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
           <Button variant="ghost" size="sm" onClick={() => setRightSidebarOpen(!rightSidebarOpen)} className="p-2">
             {rightSidebarOpen ? <ChevronRight className="w-4 h-4" /> : <Navigation className="w-4 h-4" />}
           </Button>
@@ -630,9 +583,9 @@ export default function TransitTrack() {
 
         {/* Right Sidebar Content */}
         {rightSidebarOpen && (
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4 min-h-0">
             {selectedProject ? (
-              <div className="space-y-6">
+              <div className="space-y-6 pb-4">
                 {/* Project Header */}
                 <div>
                   <div className="flex items-start justify-between mb-2">
@@ -717,7 +670,7 @@ export default function TransitTrack() {
                   </Card>
                 </div>
 
-                {/* Database Info */}
+                {/* Data Information */}
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm">Data Information</CardTitle>
@@ -729,8 +682,8 @@ export default function TransitTrack() {
                         <Badge
                           variant="secondary"
                           style={{
-                            backgroundColor: `${getProjectTypeColor(selectedProject.project_type)}20`,
-                            color: getProjectTypeColor(selectedProject.project_type),
+                            backgroundColor: `${selectedProject.color || getProjectTypeColor(selectedProject.project_type)}20`,
+                            color: selectedProject.color || getProjectTypeColor(selectedProject.project_type),
                           }}
                         >
                           {selectedProject.project_type}
@@ -743,9 +696,21 @@ export default function TransitTrack() {
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">Data Source</span>
                         <div className="flex items-center space-x-1">
-                          <span className="text-sm font-medium">MOCK</span>
+                          <span className="text-sm font-medium">{getDataSourceLabel()}</span>
                         </div>
                       </div>
+                      {selectedProject.color && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Line Color</span>
+                          <div className="flex items-center space-x-2">
+                            <div
+                              className="w-4 h-4 rounded border border-gray-300"
+                              style={{ backgroundColor: selectedProject.color }}
+                            />
+                            <span className="text-sm font-mono">{selectedProject.color}</span>
+                          </div>
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">Last Updated</span>
                         <span className="text-sm">{new Date(selectedProject.updated_at).toLocaleDateString()}</span>

@@ -60,48 +60,183 @@ export interface TransitProject {
   coordinates: [number, number][]
   created_at: string
   updated_at: string
+  color?: string
+  metadata?: any
 }
 
-// GeoJSON types
+// Enhanced GeoJSON types to support complex transit data
+export interface GeoJSONMetadata {
+  type?: string
+  color?: string
+  offset?: number
+  id?: string
+  icon?: string
+  source?: string[]
+  name?: string
+  description?: string
+  sources?: string[]
+  searchTerms?: string[]
+}
+
+export interface GeoJSONFeatureProperties {
+  // Basic project properties
+  id?: number
+  name?: string
+  status?: string
+  progressPercentage?: number
+  budgetTotal?: string
+  estimatedCompletion?: string
+  projectType?: string
+  length?: string
+  stations?: number
+  description?: string
+
+  // Feature-specific properties
+  type?: string // tracks, station-label, station-platforms, etc.
+  lines?: string[]
+  major?: boolean
+}
+
 export interface GeoJSONFeature {
   type: "Feature"
-  properties: {
-    id: number
-    name: string
-    status: string
-    progressPercentage: number
-    budgetTotal: string
-    estimatedCompletion: string
-    projectType: string
-    length: string
-    stations: number
-    description: string
-  }
+  properties: GeoJSONFeatureProperties
   geometry: {
-    type: "LineString"
-    coordinates: [number, number][]
+    type: "LineString" | "Point" | "MultiPolygon" | "Polygon"
+    coordinates: any // Can be various coordinate formats
   }
 }
 
 export interface GeoJSONCollection {
   type: "FeatureCollection"
+  metadata?: GeoJSONMetadata
   features: GeoJSONFeature[]
+  bbox?: [number, number, number, number]
+}
+
+// Process complex GeoJSON files
+export const processGeoJSONFile = (data: GeoJSONCollection): TransitProject | null => {
+  if (!data.features || data.features.length === 0) {
+    console.warn("No features found in GeoJSON file")
+    return null
+  }
+
+  // Extract metadata
+  const metadata = data.metadata || {}
+
+  // Find track features to build the main line
+  const trackFeatures = data.features.filter((f) => f.properties.type === "tracks" && f.geometry.type === "LineString")
+
+  // Find station features
+  const stationFeatures = data.features.filter((f) => f.properties.type === "station-label")
+
+  if (trackFeatures.length === 0) {
+    console.warn("No track features found in GeoJSON file")
+    return null
+  }
+
+  // Combine all track coordinates into a single line
+  const allCoordinates: [number, number][] = []
+  trackFeatures.forEach((feature) => {
+    if (feature.geometry.coordinates && Array.isArray(feature.geometry.coordinates)) {
+      allCoordinates.push(...feature.geometry.coordinates)
+    }
+  })
+
+  // Remove duplicate consecutive coordinates
+  const uniqueCoordinates = allCoordinates.filter((coord, index) => {
+    if (index === 0) return true
+    const prev = allCoordinates[index - 1]
+    return !(coord[0] === prev[0] && coord[1] === prev[1])
+  })
+
+  // Generate project data from metadata and features
+  const projectName = metadata.name || metadata.description || "Unknown Transit Line"
+  const projectId = metadata.id ? Number.parseInt(metadata.id.replace(/\D/g, "")) || Date.now() : Date.now()
+
+  // Determine project type from metadata or features
+  let projectType = "LRT" // default
+  if (metadata.name?.toLowerCase().includes("subway") || metadata.description?.toLowerCase().includes("subway")) {
+    projectType = "Subway"
+  } else if (metadata.name?.toLowerCase().includes("go") || metadata.description?.toLowerCase().includes("go")) {
+    projectType = "GO Rail"
+  } else if (metadata.name?.toLowerCase().includes("lrt") || metadata.description?.toLowerCase().includes("lrt")) {
+    projectType = "LRT"
+  }
+
+  // Estimate progress based on feature completeness (mock logic)
+  const hasStations = stationFeatures.length > 0
+  const hasPlatforms = data.features.some((f) => f.properties.type === "station-platforms")
+  let progressPercentage = 30 // base progress
+  if (hasStations) progressPercentage += 40
+  if (hasPlatforms) progressPercentage += 25
+  progressPercentage = Math.min(progressPercentage, 95) // Cap at 95%
+
+  // Determine status based on progress and metadata
+  let status = "In Progress"
+  if (progressPercentage >= 95) {
+    status = "Delayed" // High progress but not complete suggests delays
+  } else if (progressPercentage < 50) {
+    status = "Planned"
+  }
+
+  // Calculate approximate length
+  const calculateDistance = (coord1: [number, number], coord2: [number, number]): number => {
+    const R = 6371 // Earth's radius in km
+    const dLat = ((coord2[1] - coord1[1]) * Math.PI) / 180
+    const dLon = ((coord2[0] - coord1[0]) * Math.PI) / 180
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((coord1[1] * Math.PI) / 180) *
+        Math.cos((coord2[1] * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    return R * c
+  }
+
+  let totalLength = 0
+  for (let i = 1; i < uniqueCoordinates.length; i++) {
+    totalLength += calculateDistance(uniqueCoordinates[i - 1], uniqueCoordinates[i])
+  }
+
+  const project: TransitProject = {
+    id: projectId,
+    name: projectName,
+    status: status,
+    progress_percentage: progressPercentage,
+    budget_total: "$" + (totalLength * 200).toFixed(1) + "M", // Rough estimate
+    estimated_completion: progressPercentage >= 90 ? "2024" : progressPercentage >= 60 ? "2025" : "2026",
+    project_type: projectType,
+    length: totalLength.toFixed(1) + " km",
+    stations: stationFeatures.length,
+    description: metadata.description || `${projectType} line with ${stationFeatures.length} stations`,
+    coordinates: uniqueCoordinates,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    color: metadata.color,
+    metadata: metadata,
+  }
+
+  return project
 }
 
 // Load GeoJSON files as fallback
-export const loadGeoJSONFiles = async (): Promise<GeoJSONFeature[]> => {
+export const loadGeoJSONFiles = async (): Promise<TransitProject[]> => {
   const geojsonFiles = [
     "ontario-line.geojson",
     "eglinton-crosstown.geojson",
     "finch-west-lrt.geojson",
     "lakeshore-west.geojson",
     "hazel-mccallion-lrt.geojson",
+    "lakeshore-west-line.geojson",
+    "hurontario-lrt.geojson",
   ]
 
-  const allFeatures: GeoJSONFeature[] = []
+  const allProjects: TransitProject[] = []
 
   for (const filename of geojsonFiles) {
     try {
+      console.log(`Loading ${filename}...`)
       const response = await fetch(`/geojson/${filename}`)
       if (!response.ok) {
         console.warn(`Failed to load ${filename}: ${response.status}`)
@@ -109,31 +244,49 @@ export const loadGeoJSONFiles = async (): Promise<GeoJSONFeature[]> => {
       }
 
       const data: GeoJSONCollection = await response.json()
-      if (data.features && Array.isArray(data.features)) {
-        allFeatures.push(...data.features)
+      console.log(`Loaded ${filename}:`, {
+        features: data.features?.length || 0,
+        metadata: data.metadata,
+        bbox: data.bbox,
+      })
+
+      // Check if this is a simple format (single feature with project properties)
+      if (data.features && data.features.length === 1 && data.features[0].properties.id) {
+        // Simple format - convert directly
+        const feature = data.features[0]
+        const project = convertGeoJSONToTransitProject(feature)
+        allProjects.push(project)
+      } else {
+        // Complex format - process with new logic
+        const project = processGeoJSONFile(data)
+        if (project) {
+          allProjects.push(project)
+        }
       }
     } catch (error) {
       console.warn(`Error loading ${filename}:`, error)
     }
   }
 
-  return allFeatures
+  console.log(`Successfully processed ${allProjects.length} projects from GeoJSON files`)
+  return allProjects
 }
 
-// Convert GeoJSON to TransitProject format
+// Convert simple GeoJSON to TransitProject format (backward compatibility)
 export const convertGeoJSONToTransitProject = (feature: GeoJSONFeature): TransitProject => {
+  const props = feature.properties
   return {
-    id: feature.properties.id,
-    name: feature.properties.name,
-    status: feature.properties.status,
-    progress_percentage: feature.properties.progressPercentage,
-    budget_total: feature.properties.budgetTotal,
-    estimated_completion: feature.properties.estimatedCompletion,
-    project_type: feature.properties.projectType,
-    length: feature.properties.length,
-    stations: feature.properties.stations,
-    description: feature.properties.description,
-    coordinates: feature.geometry.coordinates,
+    id: props.id || Date.now(),
+    name: props.name || "Unknown Project",
+    status: props.status || "In Progress",
+    progress_percentage: props.progressPercentage || 50,
+    budget_total: props.budgetTotal || "$1.0B",
+    estimated_completion: props.estimatedCompletion || "2025",
+    project_type: props.projectType || "LRT",
+    length: props.length || "10 km",
+    stations: props.stations || 10,
+    description: props.description || "Transit project description",
+    coordinates: feature.geometry.coordinates as [number, number][],
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -341,11 +494,11 @@ export const getTransitProjects = async (): Promise<{
   // Fallback to GeoJSON files
   try {
     console.log("🔄 Falling back to GeoJSON files...")
-    const geoJsonFeatures = await loadGeoJSONFiles()
-    if (geoJsonFeatures.length > 0) {
-      console.log(`✅ Successfully loaded ${geoJsonFeatures.length} projects from GeoJSON files`)
+    const geoJsonProjects = await loadGeoJSONFiles()
+    if (geoJsonProjects.length > 0) {
+      console.log(`✅ Successfully loaded ${geoJsonProjects.length} projects from GeoJSON files`)
       return {
-        projects: geoJsonFeatures.map(convertGeoJSONToTransitProject),
+        projects: geoJsonProjects,
         source: "geojson",
       }
     }
