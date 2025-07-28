@@ -1,0 +1,32 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 4,
+        "name": "Lakeshore West Line",
+        "status": "In Progress",
+        "progressPercentage": 45,
+        "budgetTotal": "$2.1B",
+        "estimatedCompletion": "2025",
+        "projectType": "GO Rail",
+        "length": "67 km",
+        "stations": 12,
+        "description": "Improvements to the Lakeshore West GO line to support more frequent, faster service between Toronto and Hamilton."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-79.3832, 43.6426],
+          [-79.4500, 43.6300],
+          [-79.5200, 43.6200],
+          [-79.5900, 43.6100],
+          [-79.6600, 43.6000],
+          [-79.7300, 43.5900],
+          [-79.8000, 43.5800]
+        ]
+      }
+    }
+  ]
+}

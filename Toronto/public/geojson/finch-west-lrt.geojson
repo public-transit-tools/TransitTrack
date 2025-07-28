@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 3,
+        "name": "Finch West LRT",
+        "status": "In Progress",
+        "progressPercentage": 85,
+        "budgetTotal": "$2.5B",
+        "estimatedCompletion": "2024",
+        "projectType": "LRT",
+        "length": "11 km",
+        "stations": 18,
+        "description": "An 11-kilometre light rail transit line running along Finch Avenue West from Finch West Station to Humber College."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-79.5000, 43.7600],
+          [-79.4700, 43.7600],
+          [-79.4400, 43.7600],
+          [-79.4100, 43.7600],
+          [-79.3800, 43.7600],
+          [-79.3500, 43.7600]
+        ]
+      }
+    }
+  ]
+}
