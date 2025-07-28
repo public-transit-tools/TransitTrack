@@ -12,23 +12,14 @@ export const metadata: Metadata = {
   authors: [{ name: "TransitTrack Team" }],
   openGraph: {
     title: "TransitTrack - Real-time Transit Project Monitoring",
-    description:
-      "Track and visualize transit infrastructure projects across the Greater Toronto Area with real-time data and interactive maps.",
+    description: "Track and visualize transit infrastructure projects across the Greater Toronto Area",
     type: "website",
-    url: "https://transittrack.ca",
-    images: [
-      {
-        url: "/images/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "TransitTrack - Transit Project Monitoring",
-      },
-    ],
+    images: ["/images/og-image.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "TransitTrack - Real-time Transit Project Monitoring",
-    description: "Track and visualize transit infrastructure projects across the Greater Toronto Area.",
+    description: "Track and visualize transit infrastructure projects across the Greater Toronto Area",
     images: ["/images/og-image.png"],
   },
 }

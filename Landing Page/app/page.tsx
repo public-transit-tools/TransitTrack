@@ -3,149 +3,118 @@
 import { useState, useEffect } from "react"
 import {
   ArrowRight,
-  Train,
-  MapPin,
   BarChart3,
   Calendar,
-  Users,
   CheckCircle,
-  Star,
+  ChevronDown,
+  DollarSign,
+  ExternalLink,
   Github,
-  Twitter,
-  Linkedin,
-  Mail,
+  MapPin,
   Menu,
-  X,
+  Monitor,
+  Navigation,
   Play,
   Shield,
+  Train,
+  TrendingUp,
+  Users,
+  X,
   Zap,
-  Globe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import Link from "next/link"
-import Image from "next/image"
-
-const stats = [
-  { label: "Active Projects", value: "25+", icon: Train },
-  { label: "Data Points", value: "10K+", icon: BarChart3 },
-  { label: "Cities Covered", value: "15+", icon: MapPin },
-  { label: "Users", value: "5K+", icon: Users },
-]
-
-const features = [
-  {
-    icon: MapPin,
-    title: "Interactive Maps",
-    description:
-      "Visualize transit projects on detailed, interactive maps with real-time updates and progress tracking.",
-  },
-  {
-    icon: BarChart3,
-    title: "Real-time Analytics",
-    description:
-      "Get insights into project progress, budgets, timelines, and performance metrics across all transit lines.",
-  },
-  {
-    icon: Calendar,
-    title: "Timeline Tracking",
-    description: "Monitor project milestones, completion dates, and construction phases with detailed timeline views.",
-  },
-  {
-    icon: Shield,
-    title: "Data Accuracy",
-    description: "Reliable data sourced from official transit authorities and updated regularly for maximum accuracy.",
-  },
-  {
-    icon: Zap,
-    title: "Fast Performance",
-    description: "Lightning-fast loading times and smooth interactions powered by modern web technologies.",
-  },
-  {
-    icon: Globe,
-    title: "Multi-City Support",
-    description: "Support for multiple cities and transit systems with plans to expand across North America.",
-  },
-]
-
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    role: "Urban Planner",
-    company: "City of Toronto",
-    content: "TransitTrack has revolutionized how we monitor and communicate transit project progress to stakeholders.",
-    avatar: "/placeholder-user.jpg",
-    rating: 5,
-  },
-  {
-    name: "Michael Rodriguez",
-    role: "Transit Analyst",
-    company: "Metrolinx",
-    content: "The real-time data visualization capabilities have made our reporting process 10x more efficient.",
-    avatar: "/placeholder-user.jpg",
-    rating: 5,
-  },
-  {
-    name: "Emily Johnson",
-    role: "Infrastructure Manager",
-    company: "TTC",
-    content: "Finally, a tool that makes complex transit data accessible and actionable for our entire team.",
-    avatar: "/placeholder-user.jpg",
-    rating: 5,
-  },
-]
-
-const projects = [
-  {
-    name: "Ontario Line",
-    type: "Subway",
-    progress: 45,
-    status: "In Progress",
-    completion: "2031",
-    color: "#10b981",
-  },
-  {
-    name: "Eglinton Crosstown LRT",
-    type: "LRT",
-    progress: 85,
-    status: "In Progress",
-    completion: "2024",
-    color: "#8b5cf6",
-  },
-  {
-    name: "Finch West LRT",
-    type: "LRT",
-    progress: 92,
-    status: "In Progress",
-    completion: "2024",
-    color: "#06b6d4",
-  },
-]
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const [activeFeature, setActiveFeature] = useState(0)
 
+  // Auto-rotate features
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % 3)
+    }, 4000)
+    return () => clearInterval(interval)
   }, [])
+
+  const features = [
+    {
+      icon: <MapPin className="w-8 h-8 text-blue-600" />,
+      title: "Interactive Transit Maps",
+      description:
+        "Visualize all GTA transit projects on an interactive map with real-time updates and detailed project information.",
+      image: "/images/feature-map.png",
+    },
+    {
+      icon: <BarChart3 className="w-8 h-8 text-green-600" />,
+      title: "Progress Tracking",
+      description:
+        "Monitor construction progress, budget allocation, and timeline updates for every transit project in the region.",
+      image: "/images/feature-analytics.png",
+    },
+    {
+      icon: <Calendar className="w-8 h-8 text-purple-600" />,
+      title: "Timeline & Milestones",
+      description: "Stay informed about project milestones, completion dates, and upcoming transit service launches.",
+      image: "/images/feature-timeline.png",
+    },
+  ]
+
+  const stats = [
+    { label: "Active Projects", value: "25+", icon: <Train className="w-5 h-5" /> },
+    { label: "Total Investment", value: "$50B+", icon: <DollarSign className="w-5 h-5" /> },
+    { label: "Completion Rate", value: "68%", icon: <TrendingUp className="w-5 h-5" /> },
+    { label: "Data Sources", value: "3", icon: <Monitor className="w-5 h-5" /> },
+  ]
+
+  const projects = [
+    {
+      name: "Ontario Line",
+      type: "Subway",
+      status: "In Progress",
+      progress: 45,
+      completion: "2031",
+      investment: "$19.0B",
+      color: "#10b981",
+    },
+    {
+      name: "Eglinton Crosstown LRT",
+      type: "LRT",
+      status: "In Progress",
+      progress: 85,
+      completion: "2024",
+      investment: "$12.8B",
+      color: "#8b5cf6",
+    },
+    {
+      name: "Finch West LRT",
+      type: "LRT",
+      status: "In Progress",
+      progress: 92,
+      completion: "2024",
+      investment: "$2.5B",
+      color: "#8b5cf6",
+    },
+    {
+      name: "Lakeshore West GO",
+      type: "GO Rail",
+      status: "Completed",
+      progress: 100,
+      completion: "2023",
+      investment: "$1.2B",
+      color: "#06b6d4",
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : "bg-transparent"
-        }`}
-      >
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                 <Train className="w-5 h-5 text-white" />
@@ -155,22 +124,18 @@ export default function LandingPage() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Features
-              </Link>
-              <Link href="#projects" className="text-gray-600 hover:text-gray-900 transition-colors">
+              </a>
+              <a href="#projects" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Projects
-              </Link>
-              <Link href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Testimonials
-              </Link>
-              <Link href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Pricing
-              </Link>
-              <Button variant="outline" size="sm">
-                Sign In
+              </a>
+              <a href="#about" className="text-gray-600 hover:text-gray-900 transition-colors">
+                About
+              </a>
+              <Button asChild>
+                <a href="/app">Launch App</a>
               </Button>
-              <Button size="sm">Get Started</Button>
             </div>
 
             {/* Mobile menu button */}
@@ -180,173 +145,226 @@ export default function LandingPage() {
               </Button>
             </div>
           </div>
-        </div>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200">
-            <div className="px-4 py-6 space-y-4">
-              <Link
-                href="#features"
-                className="block text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Features
-              </Link>
-              <Link
-                href="#projects"
-                className="block text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Projects
-              </Link>
-              <Link
-                href="#testimonials"
-                className="block text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Testimonials
-              </Link>
-              <Link
-                href="#pricing"
-                className="block text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-              <div className="pt-4 space-y-2">
-                <Button variant="outline" className="w-full bg-transparent">
-                  Sign In
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-200 py-4">
+              <div className="flex flex-col space-y-4">
+                <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Features
+                </a>
+                <a href="#projects" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Projects
+                </a>
+                <a href="#about" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  About
+                </a>
+                <Button asChild className="w-fit">
+                  <a href="/app">Launch App</a>
                 </Button>
-                <Button className="w-full">Get Started</Button>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-        <div className="max-w-7xl mx-auto">
+      <section className="pt-24 pb-16 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge variant="secondary" className="mb-4">
-                🚀 Now tracking 25+ active projects
-              </Badge>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-                Track Transit Projects in{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600">
-                  Real-Time
-                </span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Monitor construction progress, budgets, and timelines for transit infrastructure projects across the
-                Greater Toronto Area with interactive maps and real-time data.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Button size="lg" className="text-lg px-8">
-                  Explore Projects
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
-                  <Play className="w-5 h-5 mr-2" />
-                  Watch Demo
-                </Button>
+            {/* Hero Content */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Real-time Data
+                </Badge>
+                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                  Track Transit
+                  <span className="text-green-600"> Progress</span>
+                  <br />
+                  Across the GTA
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Monitor construction progress, budgets, and timelines for all major transit infrastructure projects in
+                  the Greater Toronto Area with our comprehensive tracking platform.
+                </p>
               </div>
-              <div className="flex items-center space-x-6 text-sm text-gray-500">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span>Free to use</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span>Real-time updates</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span>Open source</span>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="bg-white rounded-2xl shadow-2xl p-6">
-                <Image
-                  src="/images/metrolinx-hero.png"
-                  alt="TransitTrack Dashboard"
-                  width={600}
-                  height={400}
-                  className="rounded-lg w-full h-auto"
-                />
-                <div className="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                  Live Data
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4">
-                  <stat.icon className="w-6 h-6 text-green-600" />
-                </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
-                <div className="text-gray-600">{stat.label}</div>
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="text-lg px-8 py-6" asChild>
+                  <a href="/app">
+                    <Play className="w-5 h-5 mr-2" />
+                    Explore Projects
+                  </a>
+                </Button>
+                <Button variant="outline" size="lg" className="text-lg px-8 py-6 bg-transparent" asChild>
+                  <a href="#demo">
+                    <Monitor className="w-5 h-5 mr-2" />
+                    Watch Demo
+                  </a>
+                </Button>
               </div>
-            ))}
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="flex items-center justify-center mb-2 text-green-600">{stat.icon}</div>
+                    <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                    <div className="text-sm text-gray-600">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Hero Image */}
+            <div className="relative">
+              <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-200">
+                <div className="aspect-video bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
+                  <img
+                    src="/images/hero-dashboard.png"
+                    alt="TransitTrack Dashboard"
+                    className="w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = "none"
+                      target.parentElement!.innerHTML = `
+                        <div class="w-full h-full flex items-center justify-center">
+                          <div class="text-center">
+                            <div class="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                              </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Interactive Dashboard</h3>
+                            <p class="text-gray-600">Real-time transit project monitoring</p>
+                          </div>
+                        </div>
+                      `
+                    }}
+                  />
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Live Data</span>
+                  </div>
+                  <Badge variant="secondary">25 Projects</Badge>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Everything you need to track transit projects
-            </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Comprehensive Transit Monitoring</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Comprehensive tools and features designed for transit professionals, urban planners, and curious citizens.
+              Get complete visibility into transit infrastructure development with our advanced tracking and
+              visualization tools.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                    <feature.icon className="w-6 h-6 text-green-600" />
+
+          {/* Feature Showcase */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+            <div className="space-y-8">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className={`p-6 rounded-xl border-2 cursor-pointer transition-all ${
+                    activeFeature === index ? "border-green-200 bg-green-50" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                  onClick={() => setActiveFeature(index)}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">{feature.icon}</div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-gray-600">{feature.description}</p>
+                    </div>
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              ))}
+            </div>
+
+            <div className="relative">
+              <div className="bg-gray-100 rounded-2xl aspect-video flex items-center justify-center">
+                <img
+                  src={features[activeFeature].image || "/placeholder.svg"}
+                  alt={features[activeFeature].title}
+                  className="w-full h-full object-cover rounded-2xl"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.style.display = "none"
+                    target.parentElement!.innerHTML = `
+                      <div class="w-full h-full flex items-center justify-center">
+                        <div class="text-center">
+                          ${features[activeFeature].icon}
+                          <h3 class="text-lg font-semibold text-gray-900 mt-4">${features[activeFeature].title}</h3>
+                        </div>
+                      </div>
+                    `
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Feature Grid */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card>
+              <CardHeader>
+                <Shield className="w-8 h-8 text-blue-600 mb-2" />
+                <CardTitle>Reliable Data</CardTitle>
+                <CardDescription>Multiple data sources ensure accuracy and up-to-date information</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Users className="w-8 h-8 text-purple-600 mb-2" />
+                <CardTitle>Public Access</CardTitle>
+                <CardDescription>Free and open access to transit project information for everyone</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Navigation className="w-8 h-8 text-green-600 mb-2" />
+                <CardTitle>Easy Navigation</CardTitle>
+                <CardDescription>Intuitive interface designed for both experts and general public</CardDescription>
+              </CardHeader>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Projects Showcase */}
-      <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
+      {/* Projects Section */}
+      <section id="projects" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Featured Transit Projects</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Featured Transit Projects</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Track the progress of major transit infrastructure projects across the GTA.
+              Explore some of the major transit infrastructure projects currently transforming the Greater Toronto Area.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+
+          <div className="grid md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="flex items-center justify-between mb-2">
-                    <CardTitle className="text-lg">{project.name}</CardTitle>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-xl">{project.name}</CardTitle>
+                      <CardDescription className="mt-1">
+                        {project.type} • Completion: {project.completion}
+                      </CardDescription>
+                    </div>
                     <Badge
                       variant="secondary"
                       style={{
@@ -354,303 +372,239 @@ export default function LandingPage() {
                         color: project.color,
                       }}
                     >
-                      {project.type}
+                      {project.status}
                     </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span>{project.status}</span>
-                    <span>Est. {project.completion}</span>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress</span>
-                      <span className="font-semibold">{project.progress}%</span>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>Progress</span>
+                        <span className="font-semibold">{project.progress}%</span>
+                      </div>
+                      <Progress value={project.progress} className="h-2" />
                     </div>
-                    <Progress value={project.progress} className="h-2" />
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center space-x-2">
+                        <DollarSign className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-medium">{project.investment}</span>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        View Details
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
           <div className="text-center mt-12">
-            <Button size="lg" variant="outline">
-              View All Projects
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button size="lg" asChild>
+              <a href="/app">
+                View All Projects
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </a>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Trusted by Transit Professionals</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              See what industry experts are saying about TransitTrack.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                    ))}
+      {/* About Section */}
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">About TransitTrack</h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                TransitTrack is an open-source platform dedicated to providing transparent, real-time information about
+                transit infrastructure projects across the Greater Toronto Area. Our mission is to keep the public
+                informed about the progress of major transportation investments that shape our communities.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Real-time Updates</h3>
+                    <p className="text-gray-600">Automated data collection from multiple official sources</p>
                   </div>
-                  <p className="text-gray-600 mb-6">"{testimonial.content}"</p>
-                  <div className="flex items-center">
-                    <Image
-                      src={testimonial.avatar || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      width={48}
-                      height={48}
-                      className="rounded-full mr-4"
-                    />
-                    <div>
-                      <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {testimonial.role} at {testimonial.company}
-                      </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Open Source</h3>
+                    <p className="text-gray-600">Transparent development and community contributions welcome</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Public Benefit</h3>
+                    <p className="text-gray-600">Free access to important transit infrastructure information</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <BarChart3 className="w-5 h-5 text-blue-600" />
+                    <span>Data Sources</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Metrolinx Official Data</span>
+                      <Badge variant="secondary">Primary</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">GeoJSON Transit Files</span>
+                      <Badge variant="secondary">Geographic</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Public APIs</span>
+                      <Badge variant="secondary">Real-time</Badge>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that works best for your organization.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Free Plan */}
-            <Card className="border-2 border-gray-200">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Free</CardTitle>
-                <div className="text-4xl font-bold text-gray-900 mt-4">$0</div>
-                <p className="text-gray-600">Perfect for individuals</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Access to all public projects</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Interactive maps</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Basic analytics</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Community support</span>
-                </div>
-                <Button className="w-full mt-6 bg-transparent" variant="outline">
-                  Get Started
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="border-2 border-green-500 relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-green-500 text-white">Most Popular</Badge>
-              </div>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Pro</CardTitle>
-                <div className="text-4xl font-bold text-gray-900 mt-4">$29</div>
-                <p className="text-gray-600">per month</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Everything in Free</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Advanced analytics</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Custom alerts</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>API access</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Priority support</span>
-                </div>
-                <Button className="w-full mt-6">Start Free Trial</Button>
-              </CardContent>
-            </Card>
-
-            {/* Enterprise Plan */}
-            <Card className="border-2 border-gray-200">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Enterprise</CardTitle>
-                <div className="text-4xl font-bold text-gray-900 mt-4">Custom</div>
-                <p className="text-gray-600">For large organizations</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Everything in Pro</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Custom integrations</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>Dedicated support</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>On-premise deployment</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                  <span>SLA guarantee</span>
-                </div>
-                <Button className="w-full mt-6 bg-transparent" variant="outline">
-                  Contact Sales
-                </Button>
-              </CardContent>
-            </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Github className="w-5 h-5 text-gray-900" />
+                    <span>Open Source</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-4">
+                    TransitTrack is built with modern web technologies and is completely open source. Contributions are
+                    welcome!
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href="https://github.com/transittrack" target="_blank" rel="noopener noreferrer">
+                      <Github className="w-4 h-4 mr-2" />
+                      View on GitHub
+                      <ExternalLink className="w-3 h-3 ml-1" />
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-green-600 to-blue-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-            Ready to track transit projects like a pro?
-          </h2>
-          <p className="text-xl text-green-100 mb-8">
-            Join thousands of transit professionals who rely on TransitTrack for accurate, real-time project data.
+      <section className="py-20 bg-gradient-to-r from-green-600 to-blue-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">Start Tracking Transit Progress Today</h2>
+          <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
+            Get instant access to comprehensive transit project data and stay informed about the future of
+            transportation in the GTA.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" className="text-lg px-8">
-              Start Free Trial
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
+              <a href="/app">
+                <Play className="w-5 h-5 mr-2" />
+                Launch TransitTrack
+              </a>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="text-lg px-8 text-white border-white hover:bg-white hover:text-green-600 bg-transparent"
+              className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-green-600 bg-transparent"
+              asChild
             >
-              Schedule Demo
+              <a href="#features">
+                <ChevronDown className="w-5 h-5 mr-2" />
+                Learn More
+              </a>
             </Button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                   <Train className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl font-bold">TransitTrack</span>
               </div>
-              <p className="text-gray-400 mb-6 max-w-md">
-                The most comprehensive platform for tracking transit infrastructure projects across the Greater Toronto
-                Area.
-              </p>
-              <div className="flex space-x-4">
-                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-                  <Github className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-                  <Twitter className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-                  <Linkedin className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-                  <Mail className="w-5 h-5" />
-                </Button>
-              </div>
+              <p className="text-gray-400">Transparent transit project monitoring for the Greater Toronto Area.</p>
             </div>
+
             <div>
               <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    API
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Documentation
-                  </Link>
-                </li>
-              </ul>
+              <div className="space-y-2">
+                <a href="#features" className="block text-gray-400 hover:text-white transition-colors">
+                  Features
+                </a>
+                <a href="#projects" className="block text-gray-400 hover:text-white transition-colors">
+                  Projects
+                </a>
+                <a href="/app" className="block text-gray-400 hover:text-white transition-colors">
+                  Launch App
+                </a>
+              </div>
             </div>
+
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
+              <h3 className="font-semibold mb-4">Resources</h3>
+              <div className="space-y-2">
+                <a href="#about" className="block text-gray-400 hover:text-white transition-colors">
+                  About
+                </a>
+                <a
+                  href="https://github.com/transittrack"
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  GitHub
+                </a>
+                <a href="/api" className="block text-gray-400 hover:text-white transition-colors">
+                  API
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Data Sources</h3>
+              <div className="space-y-2">
+                <a href="https://metrolinx.com" className="block text-gray-400 hover:text-white transition-colors">
+                  Metrolinx
+                </a>
+                <a href="https://toronto.ca" className="block text-gray-400 hover:text-white transition-colors">
+                  City of Toronto
+                </a>
+                <a href="https://ontario.ca" className="block text-gray-400 hover:text-white transition-colors">
+                  Province of Ontario
+                </a>
+              </div>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">© 2024 TransitTrack. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 sm:mt-0">
-              <Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Terms of Service
-              </Link>
+
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400">© 2024 TransitTrack. Open source project for public benefit.</p>
+            <div className="flex items-center space-x-6 mt-4 md:mt-0">
+              <a href="https://github.com/transittrack" className="text-gray-400 hover:text-white transition-colors">
+                <Github className="w-5 h-5" />
+              </a>
+              <a href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Privacy
+              </a>
+              <a href="/terms" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Terms
+              </a>
             </div>
           </div>
         </div>
