@@ -7,11 +7,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['localhost'],
+    domains: ['blob.v0.dev'],
     unoptimized: true,
-  },
-  experimental: {
-    optimizePackageImports: ['lucide-react'],
   },
 }
 
