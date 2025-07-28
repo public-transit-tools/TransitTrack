@@ -1,12 +1,27 @@
-import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-import './globals.css'
+import type React from "react"
+import type { Metadata } from "next"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: "TransitTrack - Real-time Transit Project Monitoring",
+  description:
+    "Track and visualize transit infrastructure projects across the Greater Toronto Area with real-time data and interactive maps.",
+  keywords: "transit, infrastructure, Toronto, GTA, Metrolinx, subway, LRT, GO Rail",
+  authors: [{ name: "TransitTrack Team" }],
+  openGraph: {
+    title: "TransitTrack - Real-time Transit Project Monitoring",
+    description: "Track and visualize transit infrastructure projects across the Greater Toronto Area",
+    type: "website",
+    images: ["/images/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TransitTrack - Real-time Transit Project Monitoring",
+    description: "Track and visualize transit infrastructure projects across the Greater Toronto Area",
+    images: ["/images/og-image.png"],
+  },
 }
 
 export default function RootLayout({
@@ -15,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <head>
         <style>{`
 html {
@@ -25,7 +40,7 @@ html {
 }
         `}</style>
       </head>
-      <body>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   )
 }
