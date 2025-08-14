@@ -1,9 +1,10 @@
-[v0-transit-track-project-sgreenwood-rempathcoms-projects.vercel.app](https://v0-transit-track-project-sgreenwood-rempathcoms-projects.vercel.app/)
-[0 stars](https://github.com/public-transit-tools/TransitTrack/stargazers)
-[0 forks](https://github.com/public-transit-tools/TransitTrack/forks)
-[Branches](https://github.com/public-transit-tools/TransitTrack/branches)
-[Tags](https://github.com/public-transit-tools/TransitTrack/tags)
-[Activity](https://github.com/public-transit-tools/TransitTrack/activity)
+Certainly, Sam! Here's the entire README content, including the updated badges, wrapped in a single Markdown code block:
+
+```md
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed_on_Vercel-000?style=for-the-badge&logo=vercel)](https://v0-transit-track-project-sgreenwood-rempathcoms-projects.vercel.app/)
+[![GitHub stars](https://img.shields.io/github/stars/public-transit-tools/TransitTrack?style=for-the-badge)](https://github.com/public-transit-tools/TransitTrack/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/public-transit-tools/TransitTrack?style=for-the-badge)](https://github.com/public-transit-tools/TransitTrack/network/members)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://github.com/public-transit-tools/TransitTrack/blob/dev/LICENSE)
 
 # TransitTrack - GTA Transit Infrastructure Visualization
 
@@ -11,19 +12,19 @@ A modern web application for visualizing Greater Toronto Area (GTA) transit infr
 
 🚀 Features
 
-*   Interactive Map: Custom-built map with OpenStreetMap tiles
-*   Real-time Data: GeoJSON-based project data with Supabase integration
-*   Project Tracking: Construction progress visualization with status indicators
-*   Responsive Design: Collapsible sidebars that adapt to different screen sizes
-*   Multiple Data Sources: Supports GeoJSON files, Supabase database, and mock data
+*   **Interactive Map**: Custom-built map with OpenStreetMap tiles
+*   **Real-time Data**: GeoJSON-based project data with Supabase integration
+*   **Project Tracking**: Construction progress visualization with status indicators
+*   **Responsive Design**: Collapsible sidebars that adapt to different screen sizes
+*   **Multiple Data Sources**: Supports GeoJSON files, Supabase database, and mock data
 
 🛠️ Tech Stack
 
-*   Frontend: Next.js 14, React 19, TypeScript
-*   Styling: Tailwind CSS, shadcn/ui components
-*   Database: Supabase (PostgreSQL)
-*   Maps: Custom SVG-based map with OpenStreetMap tiles
-*   Data: GeoJSON format for geographic data
+*   **Frontend**: Next.js 14, React 19, TypeScript
+*   **Styling**: Tailwind CSS, shadcn/ui components
+*   **Database**: Supabase (PostgreSQL)
+*   **Maps**: Custom SVG-based map with OpenStreetMap tiles
+*   **Data**: GeoJSON format for geographic data
 
 📋 Prerequisites
 
@@ -34,27 +35,35 @@ A modern web application for visualizing Greater Toronto Area (GTA) transit infr
 🔧 Installation
 
 1.  Clone the repository
+
     ```bash
-    git clone
-    cd transittrack
+    git clone https://github.com/public-transit-tools/TransitTrack.git
+    cd TransitTrack
     ```
+
 2.  Install dependencies
+
     ```bash
     npm install
     ```
+
 3.  Set up environment variables
+
     ```bash
     cp .env.example .env.local
     ```
+
 4.  Configure Supabase (Optional)
     *   Sign up at [supabase.com](https://supabase.com/)
     *   Create a new project
     *   Copy your project URL and anon key to .env.local
     *   Run the SQL script in scripts/create-supabase-tables.sql
 5.  Start the development server
+
     ```bash
     npm run dev
     ```
+
 6.  Open your browser
     Navigate to [http://localhost:3000](http://localhost:3000/)
 
@@ -173,3 +182,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 📞 Support
 
 For support, please open an issue on GitHub or contact the development team.
+```
