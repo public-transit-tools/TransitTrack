@@ -1,4 +1,3 @@
-```md
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed_on_Vercel-000?style=for-the-badge&logo=vercel)](https://v0-transit-track-project-sgreenwood-rempathcoms-projects.vercel.app/)
 [![GitHub stars](https://img.shields.io/github/stars/public-transit-tools/TransitTrack?style=for-the-badge)](https://github.com/public-transit-tools/TransitTrack/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/public-transit-tools/TransitTrack?style=for-the-badge)](https://github.com/public-transit-tools/TransitTrack/network/members)
@@ -180,4 +179,3 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 📞 Support
 
 For support, please open an issue on GitHub or contact the development team.
-```
