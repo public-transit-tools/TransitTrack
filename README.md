@@ -1,5 +1,3 @@
-Certainly, Sam! Here's the entire README content, including the updated badges, wrapped in a single Markdown code block:
-
 ```md
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed_on_Vercel-000?style=for-the-badge&logo=vercel)](https://v0-transit-track-project-sgreenwood-rempathcoms-projects.vercel.app/)
 [![GitHub stars](https://img.shields.io/github/stars/public-transit-tools/TransitTrack?style=for-the-badge)](https://github.com/public-transit-tools/TransitTrack/stargazers)
