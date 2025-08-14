@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "installCommand": "pnpm install --frozen-lockfile",
+  "builds": [
+    { "src": "cities/NYC/next.config.mjs", "use": "@vercel/next" },
+    { "src": "cities/Toronto/next.config.mjs", "use": "@vercel/next" },
+    { "src": "Landing Page/next.config.mjs", "use": "@vercel/next" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "cities/NYC/$1", "has": [{ "type": "host", "value": "nyc.transittrack.app" }] },
+    { "src": "/(.*)", "dest": "cities/Toronto/$1", "has": [{ "type": "host", "value": "toronto.transittrack.app" }] },
+    { "src": "/(.*)", "dest": "Landing Page/$1", "has": [{ "type": "host", "value": "transittrack.app" }] },
+    { "src": "/(.*)", "dest": "Landing Page/$1", "has": [{ "type": "host", "value": "www.transittrack.app" }] }
+  ]
+}
+
